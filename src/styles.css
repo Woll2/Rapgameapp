@@ -1,0 +1,442 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
+
+:root {
+  --neon-green: #39ff14;
+  --neon-lime: #ccff00;
+  --neon-pink: #ff00f7;
+  --dark-bg: #0d0d0d;
+  --card-bg: #1a1a1a;
+  --card-dark: #141414;
+  --text-color: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  margin-top: 10px;
+  min-height: 100vh;
+  background: var(--dark-bg);
+  color: #ffffff;
+  font-family: 'Orbitron', sans-serif;
+  overflow-x: hidden;
+}
+
+.Container {
+  background-color: var(--dark-bg);
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.1);
+}
+
+.Header .ton-connect-button {
+  display: none;
+}
+
+.Header h1 {
+  font-size: 24px;
+  background: linear-gradient(45deg, var(--neon-green), var(--neon-lime));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.Card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.Card h2 {
+  margin-bottom: 24px;
+  background: linear-gradient(90deg, var(--neon-green), var(--neon-lime));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.CardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.CardHeader h2 {
+  margin-bottom: 0;
+}
+
+.SwapLogo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.SwapCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.SwapCard .ton-connect-button {
+  width: 100%;
+  padding: 0;
+}
+
+.SwapCard .ton-connect-button button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--neon-green), var(--neon-lime));
+  color: black;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.SwapCard .ton-connect-button button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.SwapCard .ton-connect-button button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.SwapSection {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.SwapHeader {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.TokenInput {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.TokenInput input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  font-size: 24px;
+  outline: none;
+  padding: 0;
+}
+
+.TokenInput input::-webkit-outer-spin-button,
+.TokenInput input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.TokenInput input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.TokenInput input[type="number"]::-webkit-outer-spin-button,
+.TokenInput input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.TokenSelect {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(0, 255, 157, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 157, 0.2);
+}
+
+.TokenSelect img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.TokenSelect span {
+  color: var(--neon-green);
+  font-weight: 600;
+}
+
+.TokenInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+  word-break: break-all;
+}
+
+.Address {
+  color: #00ff9d;
+  font-family: monospace;
+  background: rgba(0, 255, 157, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.SwapArrow {
+  display: flex;
+  justify-content: center;
+  color: var(--neon-green);
+  cursor: pointer;
+}
+
+.SwapInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.SwapRate {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+
+.SwapRate span:last-child {
+  color: var(--neon-green);
+}
+
+.SwapButton {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--neon-green), var(--neon-lime));
+  color: black;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.SwapButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.SwapButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.go3294896168 {
+  width: 100% !important;
+  margin: 10px 0 !important;
+  padding: 16px !important;
+  border: 2px solid var(--neon-green) !important;
+  border-radius: 12px !important;
+  background: transparent !important;
+  color: var(--neon-green) !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  font-size: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+}
+
+.go3294896168:hover {
+  background: rgba(57, 255, 20, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+.connect-button-wrapper {
+  display: none;
+}
+
+.Info {
+  background: var(--card-dark);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.Info p {
+  margin: 12px 0;
+  font-size: 14px;
+  color: #888;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Info p span {
+  color: var(--neon-green);
+  font-weight: 500;
+}
+
+.Info .TokenInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.Info .TokenInfo .Address {
+  font-family: monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.ProgressSection {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ProgressInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  color: var(--neon-green);
+}
+
+.ProgressBar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.Progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-green), var(--neon-lime));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.Error {
+  color: var(--neon-pink);
+  font-size: 14px;
+  text-align: center;
+}
+
+.Title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.Logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.TonConnectButton {
+  width: 100% !important;
+  height: 48px !important;
+  font-size: 16px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(0, 255, 157, 0.2), rgba(0, 255, 157, 0.1)) !important;
+  border: 1px solid rgba(0, 255, 157, 0.2) !important;
+  color: var(--neon-green) !important;
+  transition: all 0.3s ease !important;
+}
+
+.TonConnectButton:hover {
+  background: linear-gradient(90deg, rgba(0, 255, 157, 0.3), rgba(0, 255, 157, 0.2)) !important;
+  border-color: var(--neon-green) !important;
+}
+
+.BuyButton {
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, rgba(0, 255, 157, 0.2), rgba(0, 255, 157, 0.1));
+  border: 1px solid rgba(0, 255, 157, 0.2);
+  color: var(--neon-green);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.BuyButton:hover {
+  background: linear-gradient(90deg, rgba(0, 255, 157, 0.3), rgba(0, 255, 157, 0.2));
+  border-color: var(--neon-green);
+}
+
+.BuyButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .Container {
+    padding: 10px;
+  }
+  
+  .Header {
+    padding: 15px;
+  }
+  
+  .Card {
+    padding: 20px;
+  }
+  
+  .TokenInput input {
+    font-size: 20px;
+  }
+  
+  .SwapButton {
+    padding: 14px;
+    font-size: 14px;
+  }
+}
