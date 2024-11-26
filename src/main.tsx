@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "./styles.css";
 
 // Create a client
 const queryClient = new QueryClient()
