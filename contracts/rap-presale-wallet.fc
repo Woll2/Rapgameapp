@@ -1,0 +1,203 @@
+#pragma version >=0.2.0;
+
+#include "imports/stdlib.fc";
+#include "imports/params.fc";
+#include "imports/constants.fc";
+#include "imports/jetton-utils.fc";
+
+;; Jetton Wallet Contract for RAP Presale
+
+;; Storage
+;; storage#_ balance:Coins owner_address:MsgAddress jetton_master_address:MsgAddress
+;;           presale_price:Coins min_purchase:Coins max_purchase:Coins
+;;           total_sold:Coins is_active:Bool purchases:(HashmapE 267 uint64) = Storage;
+
+const MIN_TON_FOR_STORAGE = 50000000; ;; 0.05 TON
+const GAS_CONSUMPTION = 10000000; ;; 0.01 TON
+
+(int, slice, slice, int, int, int, int, int, cell) load_data() inline {
+    slice ds = get_data().begin_parse();
+    return (
+        ds~load_coins(), ;; balance
+        ds~load_msg_addr(), ;; owner_address
+        ds~load_msg_addr(), ;; jetton_master_address
+        ds~load_coins(), ;; presale_price (1 TON = 1 RAP)
+        ds~load_coins(), ;; min_purchase (in RAP)
+        ds~load_coins(), ;; max_purchase (in RAP)
+        ds~load_coins(), ;; total_sold
+        ds~load_uint(1), ;; is_active
+        ds~load_dict() ;; purchases dictionary
+    );
+}
+
+() save_data(int balance, slice owner_address, slice jetton_master_address, 
+            int price, int min_buy, int max_buy, int total_sold, 
+            int is_active, cell purchases) impure inline {
+    set_data(begin_cell()
+        .store_coins(balance)
+        .store_slice(owner_address)
+        .store_slice(jetton_master_address)
+        .store_coins(price)
+        .store_coins(min_buy)
+        .store_coins(max_buy)
+        .store_coins(total_sold)
+        .store_uint(is_active, 1)
+        .store_dict(purchases)
+        .end_cell());
+}
+
+() send_tokens(slice to_address, int amount, slice response_address, int forward_ton_amount, int total_ton_amount, int query_id) impure inline {
+    ;; Check if we have enough tokens
+    (int balance, slice owner_address, slice jetton_master_address, int price, int min_buy, int max_buy, int total_sold, int is_active, cell purchases) = load_data();
+    throw_unless(705, balance >= amount);
+
+    ;; Update balance
+    balance -= amount;
+
+    ;; Send tokens
+    var msg = begin_cell()
+        .store_uint(0x18, 6)
+        .store_slice(to_address)
+        .store_coins(total_ton_amount)
+        .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+        .store_uint(0xf8a7ea5, 32)
+        .store_uint(query_id, 64)
+        .store_coins(amount)
+        .store_slice(response_address)
+        .store_coins(forward_ton_amount)
+        .store_uint(0, 1)
+        .end_cell();
+    
+    send_raw_message(msg, 1);
+
+    ;; Save updated balance
+    save_data(balance, owner_address, jetton_master_address, price, min_buy, max_buy, total_sold, is_active, purchases);
+}
+
+() send_ton(slice to_address, int amount) impure inline {
+    var msg = begin_cell()
+        .store_uint(0x10, 6) ;; nobounce
+        .store_slice(to_address)
+        .store_coins(amount)
+        .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
+        .end_cell();
+    send_raw_message(msg, 1);
+}
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    ;; Parse sender
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+    slice sender_address = cs~load_msg_addr();
+    throw_if(450, equal_slices(sender_address, my_address())); ;; Prevent self-transfers
+    
+    ;; Handle bounced messages
+    if (flags & 1) {
+        return on_bounce(in_msg_body);
+    }
+
+    ;; Get current data
+    (int balance, slice owner_address, slice jetton_master_address, int price, int min_buy, int max_buy, int total_sold, int is_active, cell purchases) = load_data();
+
+    ;; Process simple transfer (buying tokens)
+    if (in_msg_body.slice_empty?()) {
+        ;; Check if presale is active
+        throw_unless(451, is_active);
+        
+        ;; Check minimum TON for gas
+        throw_unless(452, msg_value >= MIN_TON_FOR_STORAGE + GAS_CONSUMPTION);
+        
+        ;; Calculate tokens amount based on sent TON
+        int amount = (msg_value - GAS_CONSUMPTION) / price;
+        throw_unless(453, amount > 0); ;; Must buy at least 1 token
+        throw_unless(454, (amount * price) == (msg_value - GAS_CONSUMPTION)); ;; Must send exact amount
+        
+        ;; Check limits
+        throw_unless(455, amount >= min_buy); ;; Minimum purchase in RAP
+        throw_unless(456, amount <= max_buy); ;; Maximum purchase in RAP
+        throw_unless(457, balance >= amount); ;; Check if we have enough tokens
+
+        ;; Check user's total purchases
+        (slice value, int found) = purchases.dict_get?(267, sender_address);
+        int current_purchase = 0;
+        if (found) {
+            current_purchase = value~load_uint(64);
+        }
+        throw_unless(458, current_purchase + amount <= max_buy); ;; Max tokens per wallet
+
+        ;; Update total sold and purchases
+        total_sold += amount;
+        current_purchase += amount;
+        purchases~dict_set(267, sender_address, begin_cell().store_uint(current_purchase, 64).end_cell().begin_parse());
+
+        ;; Send tokens to buyer
+        send_tokens(sender_address, amount, my_address(), 0, MIN_TON_FOR_STORAGE, 0);
+
+        ;; Send TON to owner (minus gas and storage)
+        send_ton(owner_address, msg_value - MIN_TON_FOR_STORAGE - GAS_CONSUMPTION);
+
+        ;; Save updated data
+        save_data(balance, owner_address, jetton_master_address, price, min_buy, max_buy, total_sold, is_active, purchases);
+        return ();
+    }
+
+    ;; Parse op
+    int op = in_msg_body~load_uint(32);
+    int query_id = in_msg_body~load_uint(64);
+
+    ;; Admin operations
+    if (equal_slices(sender_address, owner_address)) {
+        if (op == "op::change_price"c) {
+            int new_price = in_msg_body~load_coins();
+            throw_unless(459, new_price > 0);
+            save_data(balance, owner_address, jetton_master_address, new_price, min_buy, max_buy, total_sold, is_active, purchases);
+            return ();
+        }
+        
+        if (op == "op::set_active"c) {
+            int new_active = in_msg_body~load_uint(1);
+            save_data(balance, owner_address, jetton_master_address, price, min_buy, max_buy, total_sold, new_active, purchases);
+            return ();
+        }
+        
+        if (op == "op::withdraw_tokens"c) {
+            int amount = in_msg_body~load_coins();
+            throw_unless(460, amount <= balance);
+            send_tokens(owner_address, amount, my_address(), 0, MIN_TON_FOR_STORAGE, query_id);
+            return ();
+        }
+    }
+
+    ;; Handle standard operations
+    if (op == 0xf8a7ea5) { ;; transfer
+        int amount = in_msg_body~load_coins();
+        slice to_address = in_msg_body~load_msg_addr();
+        int forward_ton_amount = in_msg_body~load_coins();
+        slice response_address = in_msg_body~load_msg_addr();
+        send_tokens(to_address, amount, response_address, forward_ton_amount, 0, query_id);
+        return ();
+    }
+
+    throw(0xffff);
+}
+
+;; Get methods
+
+(int, int, int, int, int) get_presale_data() method_id {
+    (int balance, _, _, int price, int min_buy, int max_buy, int total_sold, int is_active, _) = load_data();
+    return (balance, price, total_sold, min_buy, max_buy);
+}
+
+(int) get_wallet_purchases(slice address) method_id {
+    (_, _, _, _, _, _, _, _, cell purchases) = load_data();
+    (slice value, int found) = purchases.dict_get?(267, address);
+    if (found) {
+        return value~load_uint(64);
+    }
+    return 0;
+}
+
+(int) is_active() method_id {
+    (_, _, _, _, _, _, _, int is_active, _) = load_data();
+    return is_active;
+}

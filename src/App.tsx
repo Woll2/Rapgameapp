@@ -1,6 +1,6 @@
 import { TonConnectButton } from "@tonconnect/ui-react";
 import { useTonConnect } from "./hooks/useTonConnect";
-import { usePresaleContract } from "./hooks/usePresaleContract";
+import { useIntermediateWallet } from "./hooks/useIntermediateWallet";
 import { useState } from "react";
 import WebApp from "@twa-dev/sdk";
 
@@ -10,7 +10,7 @@ const RAP_TOKEN_ADDRESS = "EQAdgc5lDTT02t1jLT6gr_L26kv4HILWZYiVRBhcJX2lgZ6Y";
 
 function App() {
   const { connected, connect } = useTonConnect();
-  const { balance, purchase, loading } = usePresaleContract();
+  const { balance, purchase, loading } = useIntermediateWallet();
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
 

@@ -6,7 +6,7 @@ export function useTonClient() {
   const { result: client, loading } = useAsyncInitialize(
     async () => {
       try {
-        const endpoint = await getHttpEndpoint({ network: "testnet" });
+        const endpoint = await getHttpEndpoint({ network: "mainnet" });
         return new TonClient({ endpoint });
       } catch (error) {
         console.error('Error initializing TonClient:', error);

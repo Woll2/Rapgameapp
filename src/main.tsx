@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient()
 
 // Manifest URL для TON Connect
-const manifestUrl = "https://yourdomain.com/tonconnect-manifest.json"
+const manifestUrl = "http://localhost:5173/tonconnect-manifest.json"
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

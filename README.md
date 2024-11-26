@@ -1,65 +1,91 @@
-# RAP Token Presale Mini-App
+# RAP Token Presale
 
-A decentralized presale application for RAP tokens on the TON blockchain.
+This repository contains the smart contracts for the RAP token presale on TON blockchain.
 
-## Features
+## Overview
 
-- Secure token presale contract
-- Per-wallet purchase tracking
-- Purchase limits
-- Real-time presale statistics
-- TonConnect integration
-- Mobile-friendly UI
+Instead of using a separate presale contract, we utilize a specialized Jetton wallet contract that handles the presale functionality. This approach provides better transparency and security:
 
-## Technical Stack
-
-- Frontend: React + TypeScript
-- Smart Contract: FunC
-- Blockchain: TON
-- Styling: CSS with cyberpunk theme
+- The presale wallet will hold exactly 20,000 RAP tokens
+- Users can directly send TON to purchase RAP tokens
+- All purchases are tracked and limited per wallet
+- Automatic token distribution upon payment
 
 ## Contract Details
 
-- Token: RAP
-- Total Supply: 20,000 RAP
-- Price: 1 TON per RAP
-- Min Purchase: 0.5 TON
-- Max Purchase: 1,000 TON
-- Contract Address (Mainnet): `0:bdc7e41dfd2015daca60cef7cbee5a9f487721f8165aa618c6347340c9757ee5`
+### Presale Wallet Contract (`contracts/rap-presale-wallet.fc`)
+
+A specialized Jetton wallet contract that:
+- Holds the presale tokens (20,000 RAP)
+- Accepts TON and automatically sends RAP tokens
+- Tracks purchases per wallet
+- Enforces purchase limits
+
+Parameters:
+- Price: 1 TON = 1 RAP
+- Minimum purchase: 0.5 TON
+- Maximum purchase: 1000 TON per wallet
+- Total supply: 20,000 RAP
+
+### Main Addresses
+
+- RAP Token Contract: `EQAdgc5lDTT02t1jLT6gr_L26kv4HILWZYiVRBhcJX2lgZ6Y`
 - Owner Address: `UQDZVD1WEazw8ypx7kZ6UCHuQkgXRIgnMW3ttPskoxyYdaDO`
+
+## How to Purchase
+
+1. Send TON to the presale wallet address
+2. You will automatically receive RAP tokens
+3. Minimum purchase is 0.5 TON
+4. Maximum purchase is 1000 TON per wallet
 
 ## Development
 
+### Prerequisites
+
 ```bash
-# Install dependencies
 npm install
-
-# Build contract
-npm run build
-
-# Deploy to mainnet (requires environment variables)
-npm run deploy:mainnet
 ```
 
-## Environment Variables
+### Build
 
-Required environment variables for deployment:
-- `ENCRYPTED_MNEMONIC`: Encrypted mnemonic phrase for deployer wallet
-- `ENCRYPTION_KEY`: Key for decrypting mnemonic
-- `TON_CENTER_API_KEY`: API key for TON Center
-- `OWNER_ADDRESS`: TonKeeper wallet address that will own the contract
-- `TOTAL_SUPPLY`: Total supply of RAP tokens
-- `PRICE_PER_TOKEN`: Price per RAP token in TON
-- `MIN_PURCHASE`: Minimum purchase amount in TON
-- `MAX_PURCHASE`: Maximum purchase amount in TON
+```bash
+npm run build
+```
 
-## Security
+### Deploy
 
-- Encrypted sensitive data
-- Secure contract deployment
-- Purchase limits per wallet
-- Immediate TON forwarding to owner
+```bash
+npm run deploy
+```
+
+## Security Features
+
+1. Purchase Limits:
+   - Minimum: 0.5 TON
+   - Maximum: 1000 TON per wallet
+   - Total supply: 20,000 RAP
+
+2. Automatic Processing:
+   - Tokens are sent immediately upon payment
+   - TON is forwarded to owner
+   - Failed transactions are automatically refunded
+
+3. Transparency:
+   - Fixed token supply in wallet
+   - All purchases are recorded on-chain
+   - Public get-methods for checking status
+
+## Get Methods
+
+1. `get_presale_data()`:
+   - Returns (balance, price, total_sold, available)
+   - Shows current presale status
+
+2. `get_wallet_purchases(address)`:
+   - Returns total purchases for a specific wallet
+   - Used to check individual limits
 
 ## License
 
-MIT
+MIT License

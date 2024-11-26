@@ -15,8 +15,11 @@ export default defineConfig({
       protocolImports: true,
     }),
   ],
-  base: './',
+  base: '/Rapgameapp/',
   build: {
     target: 'es2020',
+    outDir: 'dist',
+    assetsDir: 'assets',
+    emptyOutDir: true,
   },
 })
