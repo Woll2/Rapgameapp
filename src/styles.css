@@ -1,0 +1,448 @@
+:root {
+  /* Основные цвета */
+  --primary-color: #00FF66;  /* Салатовый */
+  --primary-hover: #00E65C;
+  --background-color: #0A0A0A;
+  --card-background: #141414;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --border-color: rgba(255, 255, 255, 0.1);
+  
+  /* Градиенты */
+  --gradient-primary: linear-gradient(45deg, #00FF66, #00E65C);
+  --gradient-hover: linear-gradient(45deg, #00E65C, #00CC52);
+  
+  /* Тени */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.2);
+  
+  /* iOS-style радиусы */
+  --border-radius-sm: 13px;
+  --border-radius-md: 16px;
+  --border-radius-lg: 20px;
+  --border-radius-xl: 24px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.Container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.MainWrapper {
+  background: var(--card-background);
+  border-radius: var(--border-radius-xl);
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.MainContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Header */
+.AppHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.HeaderLogo {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.HeaderTitle h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.HeaderTitle p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Основная карточка */
+.MainCard {
+  background: var(--card-background);
+  border-radius: var(--border-radius-xl);
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-color);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Секция прогресса */
+.ProgressSection {
+  margin: 0;
+  border-radius: var(--border-radius-xl);
+}
+
+.ProgressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ProgressPercentage {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.ProgressBar {
+  height: 8px;
+  background: var(--border-color);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.ProgressFill {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: var(--border-radius-md);
+  transition: width 0.3s ease;
+}
+
+.ProgressInfo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Секция обмена */
+.SwapSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.SwapCard {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--border-radius-xl);
+  padding: 16px;
+  border: 1px solid var(--border-color);
+}
+
+.SwapHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.Balance {
+  color: var(--text-secondary);
+}
+
+.SwapInput {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  position: relative;
+}
+
+.AmountInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: 600;
+  outline: none;
+  min-width: 0;
+  padding-right: 100px;
+  border-radius: var(--border-radius-lg);
+}
+
+.TokenSelect {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-lg);
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.TokenLogo {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.SwapArrow {
+  display: flex;
+  justify-content: center;
+  color: var(--text-secondary);
+  padding: 4px 0;
+}
+
+.ReadOnly {
+  opacity: 0.7;
+}
+
+/* Кнопки */
+.ButtonsSection {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+
+.ConnectButtonWrapper {
+  width: 100%;
+  max-width: 320px;
+  display: grid;
+  place-items: center;
+}
+
+.ConnectButtonWrapper :global(.tc-button) {
+  width: 100% !important;
+  height: 48px !important;
+  border-radius: var(--border-radius-lg) !important;
+  background: var(--gradient-primary) !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 16px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.PresaleButton {
+  width: 100%;
+  max-width: 320px;
+  height: 48px;
+  border-radius: var(--border-radius-lg);
+  background: var(--gradient-primary);
+  border: none;
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 auto;
+}
+
+/* TonConnect кнопка */
+.go3294896168 {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  padding: 8px 16px 8px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  height: 48px !important;
+  border-radius: var(--border-radius-md) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.3s ease !important;
+  border: 2px solid var(--primary-color) !important;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.2) !important;
+}
+
+.go3294896168:hover {
+  border-color: var(--primary-hover) !important;
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Лимиты */
+.InfoCard {
+  background: var(--card-background);
+  border-radius: var(--border-radius-xl);
+  padding: 24px;
+  border: 1px solid var(--border-color);
+}
+
+.InfoHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.InfoLogo {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.InfoHeader div {
+  flex: 1;
+  min-width: 0;
+}
+
+.InfoHeader h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.InfoHeader p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+}
+
+.InfoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.InfoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.InfoItem span:first-child {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.InfoItem span:last-child {
+  font-weight: 400;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.GrowthPercentage {
+  color: var(--primary-color) !important;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+  }
+  
+  .Container {
+    padding: 16px;
+  }
+  
+  .MainCard,
+  .InfoCard {
+    border-radius: var(--border-radius-md);
+    padding: 16px;
+  }
+  
+  .AmountInput {
+    font-size: 20px;
+  }
+  
+  .InfoGrid {
+    gap: 12px;
+  }
+}
+
+/* Состояние загрузки */
+.LoadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.LoadingContent {
+  text-align: center;
+}
+
+.LoadingLogo {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-bottom: 16px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Сообщение об ошибке */
+.ErrorMessage {
+  color: #FF4D4D;
+  font-size: 14px;
+  margin-top: -16px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: rgba(255, 77, 77, 0.1);
+  border-radius: var(--border-radius-sm);
+}
+
+/* Добавляем максимальную ширину для всех изображений */
+img {
+  max-width: 100%;
+  height: auto;
+}
