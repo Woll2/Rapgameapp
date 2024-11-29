@@ -1,5 +1,12 @@
 {
   "url": "https://woll2.github.io/Rapgameapp",
-  "name": "rap-presale",
-  "iconUrl": "https://woll2.github.io/Rapgameapp/icon.png"
+  "name": "RAP Game Presale",
+  "iconUrl": "https://woll2.github.io/Rapgameapp/icon.png",
+  "termsOfUseUrl": "https://woll2.github.io/Rapgameapp/terms.html",
+  "privacyPolicyUrl": "https://woll2.github.io/Rapgameapp/privacy.html",
+  "manifest_version": 0,
+  "version": "1.0.0",
+  "types": ["web3"],
+  "universal_url": "https://woll2.github.io/Rapgameapp",
+  "permissions": ["mainnet"]
 }
