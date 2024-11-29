@@ -15,7 +15,8 @@ const TOKEN_PRICE = 10;  // 1 RAP = 10 USDT
 function App() {
   const { connected } = useTonConnect();
   const [amount, setAmount] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
@@ -41,51 +42,38 @@ function App() {
   }
 
   const handlePresale = async () => {
-    if (!connected) {
-      setError("Please connect your wallet first");
+    if (!amount || isNaN(Number(amount))) {
+      setError('Please enter a valid amount');
       return;
     }
 
+    const numAmount = Number(amount);
+    if (numAmount < MIN_PURCHASE) {
+      setError(`Minimum purchase amount is ${MIN_PURCHASE} USDT`);
+      return;
+    }
+    if (numAmount > MAX_PURCHASE) {
+      setError(`Maximum purchase amount is ${MAX_PURCHASE} USDT`);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    
     try {
-      setError("");
-      const numAmount = Number(amount);
-      
-      if (isNaN(numAmount) || numAmount <= 0) {
-        setError("Please enter a valid amount");
-        return;
-      }
-
-      if (numAmount < MIN_PURCHASE) {
-        setError(`Minimum purchase is ${MIN_PURCHASE} USDT`);
-        return;
-      }
-
-      if (numAmount > MAX_PURCHASE) {
-        setError(`Maximum purchase is ${MAX_PURCHASE} USDT`);
-        return;
-      }
-
-      // Здесь будет логика пресейла
-      WebApp.showPopup({
-        title: "Success",
-        message: "Purchase successful!",
-        buttons: [{ type: "close" }]
-      });
-      setAmount("");
-    } catch (e: any) {
-      const errorMessage = e.message || "Transaction failed";
-      setError(errorMessage);
-      WebApp.showPopup({
-        title: "Error",
-        message: errorMessage,
-        buttons: [{ type: "close" }]
-      });
+      // Здесь будет логика покупки токенов
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Имитация запроса
+      console.log('Purchase successful:', amount);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Transaction failed');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const getExpectedOutput = (input: string) => {
-    const value = Number(input);
-    return value ? (value * 0.1).toFixed(2) : "0.00";  // 1 USDT = 0.1 RAP
+  const getExpectedOutput = (input: string): string => {
+    if (!input || isNaN(Number(input))) return '0.00';
+    return (Number(input) * 0.1).toFixed(2);
   };
 
   const progressPercentage = (CURRENT_PROGRESS / PRESALE_SUPPLY) * 100;
@@ -95,8 +83,8 @@ function App() {
       <div className="AppHeader">
         <img src={RGcoinLogo} alt="RAP Game" className="HeaderLogo" />
         <div className="HeaderTitle">
-          <h1>RAP Game</h1>
-          <p>Presale Phase 1</p>
+          <h1>RAPGAME</h1>
+          <p>Presale</p>
         </div>
       </div>
 
@@ -157,11 +145,20 @@ function App() {
               </div>
             ) : (
               <button 
-                className="PresaleButton" 
+                className={`PresaleButton ${isLoading ? 'loading' : ''}`}
                 onClick={handlePresale}
-                disabled={!amount}
+                disabled={!amount || isLoading}
               >
-                Buy RAP Tokens
+                {isLoading ? (
+                  <span className="LoadingText">
+                    Processing...
+                    <div className="LoadingDots">
+                      <span>.</span><span>.</span><span>.</span>
+                    </div>
+                  </span>
+                ) : (
+                  'Buy RAP Tokens'
+                )}
               </button>
             )}
           </div>
